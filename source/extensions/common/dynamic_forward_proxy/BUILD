@@ -1,0 +1,37 @@
+licenses(["notice"])  # Apache 2
+
+load(
+    "//bazel:envoy_build_system.bzl",
+    "envoy_cc_library",
+    "envoy_package",
+)
+
+envoy_package()
+
+envoy_cc_library(
+    name = "dns_cache_interface",
+    hdrs = ["dns_cache.h"],
+)
+
+envoy_cc_library(
+    name = "dns_cache_manager",
+    srcs = ["dns_cache_manager.cc"],
+    hdrs = ["dns_cache_manager.h"],
+    deps = [
+        ":dns_cache_interface",
+        "//include/envoy/singleton:manager_interface",
+        "@envoy_api//envoy/config/common/dynamic_forward_proxy/v2alpha:dns_cache_cc",
+    ],
+)
+
+envoy_cc_library(
+    name = "dns_cache_impl",
+    srcs = ["dns_cache_impl.cc"],
+    hdrs = ["dns_cache_impl.h"],
+    deps = [
+        ":dns_cache_interface",
+        "//include/envoy/network:dns_interface",
+        "//include/envoy/thread_local:thread_local_interface",
+        "//source/common/common:cleanup_lib",
+    ],
+)
